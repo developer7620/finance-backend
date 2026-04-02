@@ -192,6 +192,5 @@ Error responses:
 
 ## What I Would Add With More Time
 
-- Automated integration coverage around the most critical business paths: auth, RBAC, record filtering, and dashboard aggregations.
 - A small request collection with example payloads for faster manual evaluation.
 - Optional audit-history browsing for admins if the product required deeper operational traceability.
