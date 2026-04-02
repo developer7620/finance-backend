@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  VIEWER
+  ANALYST
+  ADMIN
+}
+
+enum RecordType {
+  INCOME
+  EXPENSE
+}
+
+enum AuditAction {
+  AUTH_REGISTER
+  AUTH_LOGIN
+  AUTH_REFRESH
+  AUTH_LOGOUT
+  AUTH_LOGOUT_ALL
+  AUTH_REFRESH_REUSE
+  USER_UPDATE
+  USER_DEACTIVATE
+  RECORD_CREATE
+  RECORD_UPDATE
+  RECORD_DELETE
+}
+
+enum AuditEntityType {
+  AUTH
+  USER
+  RECORD
+  REFRESH_TOKEN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  records      Record[]
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+}
+
+model Record {
+  id          String     @id @default(cuid())
+  amount      Decimal    @db.Decimal(14, 2)
+  type        RecordType
+  category    String
+  date        DateTime
+  notes       String?
+  createdById String
+  createdBy   User       @relation(fields: [createdById], references: [id])
+  deletedAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([createdById])
+  @@index([date])
+  @@index([type])
+  @@index([deletedAt])
+  @@index([createdById, deletedAt])
+  @@index([date, type])
+}
+
+model RefreshToken {
+  id          String        @id @default(cuid())
+  tokenHash   String        @unique
+  family      String
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  replacedById String?      @unique
+  replacedBy  RefreshToken? @relation("RefreshTokenRotation", fields: [replacedById], references: [id])
+  rotatedFrom RefreshToken[] @relation("RefreshTokenRotation")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([userId, revokedAt])
+  @@index([family])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id         String          @id @default(cuid())
+  action     AuditAction
+  entityType AuditEntityType
+  entityId   String?
+  actorId    String?
+  actor      User?           @relation(fields: [actorId], references: [id])
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  requestId  String?
+  traceId    String?
+  createdAt  DateTime        @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

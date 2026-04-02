@@ -1,0 +1,1 @@
+CREATE DATABASE finance_dashboard_test;
