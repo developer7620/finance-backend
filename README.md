@@ -1,5 +1,32 @@
 # Finance Dashboard Backend
 
+## Live API
+Base URL: `https://finance-backend-bdho.onrender.com`
+
+Test credentials:
+- Admin: `admin@finance.dev` / `Admin@1234`
+- Analyst: `analyst@finance.dev` / `Analyst@1234`
+- Viewer: `viewer@finance.dev` / `Viewer@1234`
+```
+
+**Step 2 — Submission form fields**
+
+**GitHub Repository URL:**
+```
+https://github.com/developer7620/finance-backend
+```
+
+**Live Demo or API Documentation URL:**
+```
+https://github.com/developer7620/finance-backend/tree/main/docs/postman
+```
+
+Push the README change to GitHub, then you're done until submission day.
+
+One note — Render's free tier **spins down after 15 minutes of inactivity** and takes ~50 seconds to wake up on the next request. If the evaluator hits your URL and gets a timeout, it might look broken. To avoid this, on April 6th morning, hit your login endpoint once before submitting so the server is warm:
+```
+https://finance-backend-bdho.onrender.com/api/auth/login
+
 A clean backend system demonstrating:
 
 - permission-based RBAC
